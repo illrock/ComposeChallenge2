@@ -1,7 +1,8 @@
-package com.ebayk
+package com.ebayk.presentation.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.ebayk.R
 
 class MainActivity : AppCompatActivity() {
 

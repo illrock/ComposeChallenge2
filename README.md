@@ -104,3 +104,6 @@ Which trade-offs did you take?
 
 * FILL-ME 1
 * FILL-ME 2
+
+1. Well, first things first, I was surprised that there is no git initiated here, so I did it.
+2. Config the project, include libraries.
