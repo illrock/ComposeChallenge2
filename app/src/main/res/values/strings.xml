@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">EbayKCodingChallenge</string>
+
+    <string name="error_connection">No internet connection</string>
+    <string name="error_unknown">Whoops! Something went wrong :(</string>
 </resources>
