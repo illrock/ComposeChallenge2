@@ -14,4 +14,8 @@
     <color name="green_500">#86B817</color>
     <color name="green_700">#508200</color>
 
+    <color name="text_main">@color/black</color>
+    <color name="text_indicator">@color/white</color>
+
+    <color name="indicator_background">@color/black_transparent</color>
 </resources>
