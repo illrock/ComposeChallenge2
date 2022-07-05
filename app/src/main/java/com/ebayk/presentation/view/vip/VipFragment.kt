@@ -1,34 +1,24 @@
 package com.ebayk.presentation.view.vip
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
@@ -36,17 +26,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.ebayk.data.network.response.ad.AdResponse
-import com.ebayk.presentation.view.compose.*
-import com.ebayk.presentation.view.compose.item.Title
+import com.ebayk.R
+import com.ebayk.data.network.response.ad.model.Address
+import com.ebayk.presentation.view.common.compose.constants.PADDING_BOTTOM_EXTRA
+import com.ebayk.presentation.view.common.compose.item.SectionDivider
 import com.ebayk.presentation.view.util.ViewModelResult
+import com.ebayk.presentation.view.vip.compose.item.VipDescription
+import com.ebayk.presentation.view.vip.compose.item.VipDetails
+import com.ebayk.presentation.view.vip.compose.item.VipDocuments
+import com.ebayk.presentation.view.vip.compose.item.VipFeatures
+import com.ebayk.presentation.view.vip.compose.item.VipGeneralInfo
+import com.ebayk.presentation.view.vip.model.VipAd
+import com.ebayk.util.openBrowser
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import dagger.hilt.android.AndroidEntryPoint
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 @OptIn(ExperimentalPagerApi::class)
@@ -56,23 +50,23 @@ class VipFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                VipScreen(vm)
+                Screen(vm)
             }
         }
     }
 
     @Composable
-    private fun VipScreen(vm: VipViewModel) {
+    private fun Screen(vm: VipViewModel) {
         Scaffold {
             Surface(
                 modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colors.background
+                color = colorResource(id = R.color.vip_background)
             ) {
-                val result: ViewModelResult<AdResponse>? by vm.result.observeAsState()
+                val result: ViewModelResult<VipAd>? by vm.result.observeAsState()
                 when (result) {
-                    is ViewModelResult.Loading -> VipLoading()
-                    is ViewModelResult.Success -> VipSuccess((result as ViewModelResult.Success).data)
-                    is ViewModelResult.Error -> VipError()
+                    is ViewModelResult.Loading -> Loading()
+                    is ViewModelResult.Success -> SuccessHost((result as ViewModelResult.Success).data)
+                    is ViewModelResult.Error -> Error()
                     else -> throw IllegalStateException("Unexpected ViewModelResult")
                 }
             }
@@ -80,31 +74,61 @@ class VipFragment : Fragment() {
     }
 
     @Composable
-    private fun VipSuccess(response: AdResponse) {
+    private fun SuccessHost(ad: VipAd) {
         val navController = rememberNavController()
         NavHost(navController, startDestination = SuccessScreen.VIP.value) {
-            composable(SuccessScreen.VIP.value) { VipSuccessContent(navController, response) }
+            composable(SuccessScreen.VIP.value) { Success(navController, ad) }
             composable(getNavVipBigPictureUrl()) { backStackEntry ->
                 val pictureUrl = backStackEntry.arguments?.getString(COMPOSE_NAV_ARG_PICTURE_URL)
-                VipBigPicture(pictureUrl)
+                BigPicture(pictureUrl)
             }
         }
     }
 
     @Composable
-    private fun VipSuccessContent(navController: NavController, response: AdResponse) {
-        Column(Modifier.verticalScroll(rememberScrollState())) {
+    private fun Success(navController: NavController, ad: VipAd) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
             val state = rememberPagerState()
-            PicturesSlider(navController, state, response.pictures)
-            Title(response.title)
+            VipGeneralInfo(navController, state, ad, PICTURES_SLIDER_HEIGHT, SuccessScreen.VIP_BIG_PICTURE.value) {
+                openGoogleMaps(it)
+            }
+
+            if (ad.attributes.isNotEmpty()) {
+                SectionDivider()
+                VipDetails(ad.attributes)
+            }
+
+            if (ad.features.isNotEmpty()) {
+                SectionDivider()
+                VipFeatures(ad.features, FEATURES_COLUMNS_COUNT)
+            }
+
+            if (ad.documents.isNotEmpty()) {
+                SectionDivider()
+                VipDocuments(ad.documents) {
+                    requireContext().openBrowser(it)
+                }
+            }
+
+            if (ad.description.isNotBlank()) {
+                SectionDivider()
+                VipDescription(ad.description)
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .height(PADDING_BOTTOM_EXTRA.dp)
+            )
         }
     }
 
     @Composable
-    private fun VipBigPicture(pictureTemplateUrl: String?) {
-        val bigPictureUrl = pictureTemplateUrl?.toHighResUrl()
+    private fun BigPicture(pictureUrl: String?) {
         AsyncImage(
-            model = bigPictureUrl,
+            model = pictureUrl,
             contentDescription = null,
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxSize()
@@ -112,75 +136,26 @@ class VipFragment : Fragment() {
     }
 
     @Composable
-    private fun VipLoading() {
+    private fun Loading() {
         //todo show progress
     }
 
     @Composable
-    private fun VipError() {
+    private fun Error() {
         //todo show error (custom or from back-end)
     }
 
-    @Composable
-    private fun PicturesSlider(navController: NavController, state: PagerState, pictureTemplates: List<String>) {
-        val previewPictureUrl = remember { mutableStateOf("") }
-        val previewPictures = pictureTemplates.map { it.toLowResUrl() }
-        Box(contentAlignment = Alignment.TopCenter) {
-            HorizontalPager(
-                state = state,
-                count = previewPictures.size,
-                modifier = Modifier
-                    .height(PREVIEW_PICTURE_HEIGHT.dp)
-                    .fillMaxWidth()
-            ) { pageIndex ->
-                previewPictureUrl.value = previewPictures[pageIndex]
-                val encodedPictureTemplateUrl = URLEncoder.encode(pictureTemplates[pageIndex], StandardCharsets.UTF_8.toString())
-                val clickDestination = "${SuccessScreen.VIP_BIG_PICTURE.value}/$encodedPictureTemplateUrl"
-                AsyncImage(
-                    model = previewPictureUrl.value,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { navController.navigate(clickDestination) }
-                )
-            }
-            PicturesPageIndicator(
-                state,
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = PADDING_STANDARD.dp, bottom = PADDING_STANDARD.dp)
-            )
-        }
-    }
-
-    @Composable
-    private fun PicturesPageIndicator(state: PagerState, modifier: Modifier) {
-        Surface(
-            color = colorResource(id = com.ebayk.R.color.indicator_background),
-            modifier = modifier
-                .clip(RoundedCornerShape(SHAPE_ROUND_RADIUS.dp))
-        ) {
-            Text(
-                text = getPicturesPageIndicatorText(state.currentPage, state.pageCount),
-                fontFamily = FontFamily(Font(com.ebayk.R.font.roboto_medium, FontWeight.Medium)),
-                fontSize = TEXT_SIZE_INDICATOR.sp,
-                color = colorResource(id = com.ebayk.R.color.text_indicator),
-                modifier = Modifier.padding(PADDING_HALF.dp)
-            )
-        }
-    }
-
-    private fun getPicturesPageIndicatorText(currentPage: Int, pageCount: Int) = getString(
-        com.ebayk.R.string.vip_pictures_page_indicator_template,
-        currentPage + 1,
-        pageCount
-    )
-
-    private fun String.toLowResUrl() = replace(IMAGE_ID_PLACEHOLDER, IMAGE_ID_VALUE_LOW_RES)
-    private fun String.toHighResUrl() = replace(IMAGE_ID_PLACEHOLDER, IMAGE_ID_VALUE_HIGH_RES)
-
     private fun getNavVipBigPictureUrl() = SuccessScreen.VIP_BIG_PICTURE.value + "/{" + COMPOSE_NAV_ARG_PICTURE_URL + "}"
+
+    private fun openGoogleMaps(address: Address) {
+        val encodedAddress = Uri.encode("${address.street}, ${address.city}, ${address.zipCode}")
+        val geoUri = Uri.parse("geo:${address.latitude},${address.longitude}?q=$encodedAddress")
+        val mapIntent = Intent(Intent.ACTION_VIEW, geoUri)
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivity(mapIntent)
+        }
+    }
 
     private enum class SuccessScreen(val value: String) {
         VIP("vip"),
@@ -188,11 +163,9 @@ class VipFragment : Fragment() {
     }
 
     companion object {
-        const val COMPOSE_NAV_ARG_PICTURE_URL = "pictureUrl"
-        const val IMAGE_ID_PLACEHOLDER = "{imageId}"
-        const val IMAGE_ID_VALUE_LOW_RES = "1"
-        const val IMAGE_ID_VALUE_HIGH_RES = "57"
+        private const val COMPOSE_NAV_ARG_PICTURE_URL = "pictureUrl"
 
-        const val PREVIEW_PICTURE_HEIGHT = 300
+        private const val PICTURES_SLIDER_HEIGHT = 300
+        private const val FEATURES_COLUMNS_COUNT = 2
     }
 }

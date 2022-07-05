@@ -15,7 +15,14 @@
     <color name="green_700">#508200</color>
 
     <color name="text_main">@color/black</color>
+    <color name="text_secondary">@color/gray_600</color>
+    <color name="text_amount">@color/green_500</color>
     <color name="text_indicator">@color/white</color>
+
+    <color name="vip_background">@color/white</color>
+
+    <color name="section_divider_color">#EEEEEE</color>
+    <color name="item_divider_color">#EEEEEE</color>
 
     <color name="indicator_background">@color/black_transparent</color>
 </resources>

@@ -9,6 +9,7 @@ import com.ebayk.data.network.response.ApiResult
 import com.ebayk.data.network.response.ad.AdResponse
 import com.ebayk.data.repository.AdRepository
 import com.ebayk.presentation.view.util.ViewModelResult
+import com.ebayk.presentation.view.vip.model.VipAd
 import com.ebayk.util.print
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,8 +25,8 @@ class VipViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _result = MutableLiveData<ViewModelResult<AdResponse>>()
-    val result: LiveData<ViewModelResult<AdResponse>> = _result
+    private val _result = MutableLiveData<ViewModelResult<VipAd>>()
+    val result: LiveData<ViewModelResult<VipAd>> = _result
 
     init {
         loadAd(AD_ID)
@@ -42,11 +43,9 @@ class VipViewModel @Inject constructor(
         }
     }
 
-    private fun handleAdResult(result: ApiResult<AdResponse>) {
-        when (result) {
-            is ApiResult.Success -> _result.value = ViewModelResult.Success(result.data)
-            is ApiResult.Error -> showError(result.exception)
-        }
+    private fun handleAdResult(result: ApiResult<AdResponse>) = when (result) {
+        is ApiResult.Success -> _result.value = ViewModelResult.Success(VipAd(result.data))
+        is ApiResult.Error -> showError(result.exception)
     }
 
     private fun showError(e: Exception) {
