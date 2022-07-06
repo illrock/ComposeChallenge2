@@ -21,14 +21,10 @@ import com.ebayk.presentation.view.common.compose.constants.PADDING_QUARTER
 import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 import com.ebayk.presentation.view.vip.model.VipAd
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 internal fun VipGeneralInfo(
     navController: NavController,
-    state: PagerState,
     ad: VipAd,
     pictureSliderHeight: Int,
     bigPictureScreenValue: String,
@@ -41,7 +37,6 @@ internal fun VipGeneralInfo(
         if (ad.lowResPictures.isNotEmpty()) {
             VipPicturesSlider(
                 navController,
-                state,
                 ad.lowResPictures,
                 ad.highResPictures,
                 bigPictureScreenValue,

@@ -25,14 +25,10 @@ class VipViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _result = MutableLiveData<ViewModelResult<VipAd>>()
+    private val _result = MutableLiveData<ViewModelResult<VipAd>>(ViewModelResult.Loading)
     val result: LiveData<ViewModelResult<VipAd>> = _result
 
-    init {
-        loadAd(AD_ID)
-    }
-
-    private fun loadAd(id: Long) {
+    internal fun loadAd(id: Long) {
         _result.value = ViewModelResult.Loading
         viewModelScope.launch(dispatcher) {
             adRepository.get(id).let { result ->
@@ -56,9 +52,5 @@ class VipViewModel @Inject constructor(
         }
         _result.value = vmError
         e.print()
-    }
-
-    companion object {
-        private const val AD_ID = 1118635128L
     }
 }

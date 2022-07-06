@@ -16,6 +16,9 @@ const val TEXT_SIZE_BODY = 14
 const val TEXT_SIZE_HEADER = 20
 
 const val IMAGE_SIZE_SMALL = 16
+const val IMAGE_SIZE_BIG = 48
+
+const val PROGRESS_SIZE = 48
 
 const val SHAPE_ROUND_RADIUS = 4
 

@@ -3,6 +3,7 @@
 
     <string name="error_connection">No internet connection</string>
     <string name="error_unknown">Whoops! Something went wrong :(</string>
+    <string name="error_tap_to_retry">Tap to retry</string>
 
     <string name="vip_pictures_page_indicator_template">%1$d / %2$d</string>
     <string name="vip_ad_id_template">ID: %1$s</string>

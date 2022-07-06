@@ -29,6 +29,7 @@ import com.ebayk.presentation.view.common.compose.constants.TEXT_SIZE_INDICATOR
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -36,12 +37,12 @@ import java.nio.charset.StandardCharsets
 @Composable
 internal fun VipPicturesSlider(
     navController: NavController,
-    state: PagerState,
     lowResPictures: List<String>,
     highResPictures: List<String>,
     destinationScreenValue: String,
     height: Int
 ) {
+    val state = rememberPagerState()
     val previewPictureUrl = remember { mutableStateOf("") }
     Box(contentAlignment = Alignment.TopCenter) {
         HorizontalPager(
