@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -26,7 +24,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.ebayk.data.network.response.ad.model.Address
 import com.ebayk.presentation.view.common.compose.constants.PADDING_BOTTOM_EXTRA
 import com.ebayk.presentation.view.common.compose.item.ComposeError
@@ -72,7 +69,7 @@ class VipFragment : Fragment() {
             composable(SuccessScreen.VIP.value) { Success(navController, ad) }
             composable(getNavVipBigPictureUrl()) { backStackEntry ->
                 val pictureUrl = backStackEntry.arguments?.getString(COMPOSE_NAV_ARG_PICTURE_URL)
-                BigPicture(pictureUrl)
+                VipBigPicture(pictureUrl, navController)
             }
         }
     }
@@ -121,17 +118,6 @@ class VipFragment : Fragment() {
         }
     }
 
-    @Composable
-    private fun BigPicture(pictureUrl: String?) {
-        AsyncImage(
-            model = pictureUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-    }
-
     private fun loadData() {
         vm.loadAd(AD_ID)
     }
@@ -154,9 +140,9 @@ class VipFragment : Fragment() {
     }
 
     companion object {
-        private const val AD_ID = 1118635128L
+        const val COMPOSE_NAV_ARG_PICTURE_URL = "pictureUrl"
 
-        private const val COMPOSE_NAV_ARG_PICTURE_URL = "pictureUrl"
+        private const val AD_ID = 1118635128L
 
         private const val PICTURES_SLIDER_HEIGHT = 300
         private const val FEATURES_COLUMNS_COUNT = 2

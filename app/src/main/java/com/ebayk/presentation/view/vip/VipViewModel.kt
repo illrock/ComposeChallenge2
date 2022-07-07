@@ -4,19 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ebayk.R
 import com.ebayk.data.network.response.ApiResult
 import com.ebayk.data.network.response.ad.AdResponse
 import com.ebayk.data.repository.AdRepository
 import com.ebayk.presentation.view.util.ViewModelResult
 import com.ebayk.presentation.view.vip.model.VipAd
 import com.ebayk.util.print
+import com.ebayk.util.toViewModelError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,11 +44,7 @@ class VipViewModel @Inject constructor(
     }
 
     private fun showError(e: Exception) {
-        val vmError = when {
-            e is UnknownHostException -> ViewModelResult.Error(errorRes = R.string.error_connection)
-            e.message != null -> ViewModelResult.Error(errorMessage = e.message)
-            else -> ViewModelResult.Error(errorRes = R.string.error_unknown)
-        }
+        val vmError = e.toViewModelError()
         _result.value = vmError
         e.print()
     }

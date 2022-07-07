@@ -5,6 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import com.ebayk.BuildConfig
+import com.ebayk.R
+import com.ebayk.presentation.view.util.ViewModelResult
+import java.net.UnknownHostException
 
 fun Context.openBrowser(url: String) {
     if (url.isNotBlank()) {
@@ -27,4 +30,10 @@ fun logDebug(message: Any?) {
         val fullMessage = "($fileName:$lineNumber): $message"
         Log.d(tag, fullMessage)
     }
+}
+
+fun Throwable.toViewModelError() = when {
+    this is UnknownHostException -> ViewModelResult.Error(errorRes = R.string.error_connection)
+    this.message != null -> ViewModelResult.Error(errorMessage = message)
+    else -> ViewModelResult.Error(errorRes = R.string.error_unknown)
 }
