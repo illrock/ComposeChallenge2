@@ -20,9 +20,13 @@ import com.ebayk.presentation.view.common.compose.constants.PADDING_MEDIUM
 import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 import com.ebayk.presentation.view.common.compose.item.ItemDivider
+import com.ebayk.presentation.view.common.compose.item.SectionDivider
 
 @Composable
 internal fun VipDocuments(documents: List<Document>, onClick: (link: String) -> Unit) {
+    if (documents.isEmpty()) return
+
+    SectionDivider()
     Column(
         modifier = Modifier
             .padding(PADDING_STANDARD.dp)

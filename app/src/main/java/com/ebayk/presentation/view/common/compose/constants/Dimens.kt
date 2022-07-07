@@ -8,6 +8,7 @@ const val PADDING_QUARTER = 4
 const val PADDING_HALF = 8
 const val PADDING_MEDIUM = 12
 const val PADDING_STANDARD = 16
+const val PADDING_DOUBLE = 32
 
 const val PADDING_BOTTOM_EXTRA = 48
 
@@ -16,6 +17,7 @@ const val TEXT_SIZE_BODY = 14
 const val TEXT_SIZE_HEADER = 20
 
 const val IMAGE_SIZE_SMALL = 16
+const val IMAGE_SIZE_BUTTON = 28
 const val IMAGE_SIZE_BIG = 48
 
 const val PROGRESS_SIZE = 48

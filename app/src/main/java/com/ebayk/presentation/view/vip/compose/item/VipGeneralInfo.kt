@@ -26,37 +26,43 @@ import com.ebayk.presentation.view.vip.model.VipAd
 internal fun VipGeneralInfo(
     navController: NavController,
     ad: VipAd,
-    pictureSliderHeight: Int,
+    picturesPagerHeight: Int,
     bigPictureScreenValue: String,
-    onAddressClick: (address: Address) -> Unit
+    onAddressClick: (address: Address) -> Unit,
+    onShareClick: (url: String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .padding(bottom = PADDING_STANDARD.dp)
     ) {
-        if (ad.lowResPictures.isNotEmpty()) {
-            VipPicturesSlider(
-                navController,
-                ad.lowResPictures,
-                ad.highResPictures,
-                bigPictureScreenValue,
-                pictureSliderHeight
-            )
-        }
+        VipPicturesPager(
+            navController,
+            ad.lowResPictures,
+            ad.highResPictures,
+            picturesPagerHeight,
+            bigPictureScreenValue,
+            onShareClick
+        )
         VipTitle(
             ad.title,
             modifier = Modifier
                 .padding(top = PADDING_STANDARD.dp)
                 .padding(horizontal = PADDING_STANDARD.dp)
         )
+
+        val price = ad.priceWithAmount
+            ?: stringResource(id = R.string.vip_general_info_price_not_available)
         VipTitle(
-            ad.priceWithAmount,
+            price,
             R.color.text_amount,
             modifier = Modifier
                 .padding(top = PADDING_QUARTER.dp)
                 .padding(horizontal = PADDING_STANDARD.dp)
         )
-        VipAddress(ad.address) { onAddressClick(it) }
+
+        VipAddress(ad.address) {
+            onAddressClick(it)
+        }
         DateViewsId(
             ad,
             modifier = Modifier
@@ -72,32 +78,36 @@ private fun DateViewsId(ad: VipAd, modifier: Modifier = Modifier) {
         modifier = modifier
             .padding(horizontal = PADDING_STANDARD.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_calendar),
-            contentDescription = null,
-            modifier = Modifier
-                .size(IMAGE_SIZE_SMALL.dp)
-        )
-        BodyText(
-            text = ad.postedDate,
-            colorRes = R.color.text_secondary,
-            modifier = Modifier
-                .padding(start = PADDING_HALF.dp)
-        )
+        ad.postedDate?.let { date ->
+            Image(
+                painter = painterResource(id = R.drawable.ic_calendar),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(IMAGE_SIZE_SMALL.dp)
+            )
+            BodyText(
+                text = date,
+                colorRes = R.color.text_secondary,
+                modifier = Modifier
+                    .padding(start = PADDING_HALF.dp)
+                    .padding(end = PADDING_STANDARD.dp)
+            )
+        }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_visits),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(start = PADDING_STANDARD.dp)
-                .size(IMAGE_SIZE_SMALL.dp)
-        )
-        BodyText(
-            text = ad.visits.toString(),
-            colorRes = R.color.text_secondary,
-            modifier = Modifier
-                .padding(start = PADDING_HALF.dp)
-        )
+        ad.visits.takeIf { it >= 0 }?.let { visits ->
+            Image(
+                painter = painterResource(id = R.drawable.ic_visits),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(IMAGE_SIZE_SMALL.dp)
+            )
+            BodyText(
+                text = visits.toString(),
+                colorRes = R.color.text_secondary,
+                modifier = Modifier
+                    .padding(start = PADDING_HALF.dp)
+            )
+        }
 
         BodyText(
             text = stringResource(id = R.string.vip_ad_id_template, ad.id),

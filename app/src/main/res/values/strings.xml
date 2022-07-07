@@ -8,6 +8,8 @@
     <string name="vip_pictures_page_indicator_template">%1$d / %2$d</string>
     <string name="vip_ad_id_template">ID: %1$s</string>
 
+    <string name="vip_general_info_price_not_available">Price is not available</string>
+
     <string name="vip_details_section_header">Details</string>
     <string name="vip_features_section_header">Ausstattung</string>
     <string name="vip_documents_section_header">Weitere Informationen</string>

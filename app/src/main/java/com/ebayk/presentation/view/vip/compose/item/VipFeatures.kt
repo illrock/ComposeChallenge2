@@ -16,12 +16,16 @@ import com.ebayk.presentation.view.common.compose.constants.PADDING_HALF
 import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 import com.ebayk.presentation.view.common.compose.item.ItemDivider
+import com.ebayk.presentation.view.common.compose.item.SectionDivider
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
 
 @Composable
 internal fun VipFeatures(features: List<String>, columnsCount: Int) {
+    if (features.isEmpty()) return
+
+    SectionDivider()
     val padding = PADDING_STANDARD
     Column(
         modifier = Modifier

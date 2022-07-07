@@ -11,13 +11,15 @@ import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 
 @Composable
-internal fun VipAddress(address: Address, onClick:(address: Address) -> Unit) {
-    BodyText(
-        text = "${address.street}, ${address.zipCode} ${address.city}",
-        colorRes = R.color.text_secondary,
-        modifier = Modifier
-            .padding(top = PADDING_STANDARD.dp)
-            .padding(horizontal = PADDING_STANDARD.dp)
-            .clickable { onClick(address) }
-    )
+internal fun VipAddress(address: Address?, onClick:(address: Address) -> Unit) {
+    address?.let {
+        BodyText(
+            text = "${it.street}, ${it.zipCode} ${it.city}",
+            colorRes = R.color.text_secondary,
+            modifier = Modifier
+                .padding(top = PADDING_STANDARD.dp)
+                .padding(horizontal = PADDING_STANDARD.dp)
+                .clickable { onClick(it) }
+        )
+    }
 }

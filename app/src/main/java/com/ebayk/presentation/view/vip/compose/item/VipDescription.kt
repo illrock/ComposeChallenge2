@@ -10,9 +10,13 @@ import com.ebayk.R
 import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 import com.ebayk.presentation.view.common.compose.item.ItemDivider
+import com.ebayk.presentation.view.common.compose.item.SectionDivider
 
 @Composable
 internal fun VipDescription(description: String) {
+    if (description.isBlank()) return
+
+    SectionDivider()
     Column(
         modifier = Modifier
             .padding(PADDING_STANDARD.dp)

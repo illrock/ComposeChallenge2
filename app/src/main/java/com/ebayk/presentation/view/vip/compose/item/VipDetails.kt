@@ -14,10 +14,14 @@ import com.ebayk.presentation.view.common.compose.constants.PADDING_MEDIUM
 import com.ebayk.presentation.view.common.compose.constants.PADDING_STANDARD
 import com.ebayk.presentation.view.common.compose.item.BodyText
 import com.ebayk.presentation.view.common.compose.item.ItemDivider
+import com.ebayk.presentation.view.common.compose.item.SectionDivider
 import com.ebayk.presentation.view.vip.model.VipAd
 
 @Composable
 internal fun VipDetails(details: List<VipAd.VipAttribute>) {
+    if (details.isEmpty()) return
+
+    SectionDivider()
     Column(
         modifier = Modifier
             .padding(PADDING_STANDARD.dp)

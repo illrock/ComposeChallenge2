@@ -12,8 +12,8 @@ import java.net.UnknownHostException
 fun Context.openBrowser(url: String) {
     if (url.isNotBlank()) {
         try {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(browserIntent);
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(browserIntent)
         } catch (e: Exception) {
             logDebug("Couldn't open browser!")
             e.print()
@@ -33,7 +33,16 @@ fun logDebug(message: Any?) {
 }
 
 fun Throwable.toViewModelError() = when {
-    this is UnknownHostException -> ViewModelResult.Error(errorRes = R.string.error_connection)
-    this.message != null -> ViewModelResult.Error(errorMessage = message)
-    else -> ViewModelResult.Error(errorRes = R.string.error_unknown)
+    this is UnknownHostException -> ViewModelResult.Error(
+        errorRes = R.string.error_connection,
+        iconRes = R.drawable.ic_wifi_off
+    )
+    this.message != null -> ViewModelResult.Error(
+        errorMessage = message,
+        iconRes = R.drawable.ic_mood_bad
+    )
+    else -> ViewModelResult.Error(
+        errorRes = R.string.error_unknown,
+        iconRes = R.drawable.ic_mood_sick
+    )
 }

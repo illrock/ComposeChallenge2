@@ -7,21 +7,26 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.ebayk.R
 import com.ebayk.presentation.view.common.compose.constants.TEXT_SIZE_HEADER
 
 @Composable
 internal fun VipTitle(
-    title: String,
+    title: String?,
     colorRes: Int = R.color.text_main,
+    textAlign: TextAlign? = null,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = title,
-        fontFamily = FontFamily(Font(R.font.roboto_medium, FontWeight.Medium)),
-        fontSize = TEXT_SIZE_HEADER.sp,
-        color = colorResource(id = colorRes),
-        modifier = modifier
-    )
+    title?.takeIf { it.isNotBlank() }?.let {
+        Text(
+            text = it,
+            fontFamily = FontFamily(Font(R.font.roboto_medium, FontWeight.Medium)),
+            fontSize = TEXT_SIZE_HEADER.sp,
+            color = colorResource(id = colorRes),
+            textAlign = textAlign,
+            modifier = modifier
+        )
+    }
 }

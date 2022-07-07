@@ -28,7 +28,6 @@ import com.ebayk.data.network.response.ad.model.Address
 import com.ebayk.presentation.view.common.compose.constants.PADDING_BOTTOM_EXTRA
 import com.ebayk.presentation.view.common.compose.item.ComposeError
 import com.ebayk.presentation.view.common.compose.item.ComposeLoading
-import com.ebayk.presentation.view.common.compose.item.SectionDivider
 import com.ebayk.presentation.view.util.ViewModelResult
 import com.ebayk.presentation.view.vip.compose.item.*
 import com.ebayk.presentation.view.vip.model.VipAd
@@ -84,33 +83,16 @@ class VipFragment : Fragment() {
                 navController,
                 ad,
                 PICTURES_SLIDER_HEIGHT,
-                SuccessScreen.VIP_BIG_PICTURE.value
-            ) {
-                openGoogleMaps(it)
+                SuccessScreen.VIP_BIG_PICTURE.value,
+                onAddressClick = { openGoogleMaps(it) },
+                onShareClick = { shareBigImage(it) }
+            )
+            VipDetails(ad.attributes)
+            VipFeatures(ad.features, FEATURES_COLUMNS_COUNT)
+            VipDocuments(ad.documents) {
+                requireContext().openBrowser(it)
             }
-
-            if (ad.attributes.isNotEmpty()) {
-                SectionDivider()
-                VipDetails(ad.attributes)
-            }
-
-            if (ad.features.isNotEmpty()) {
-                SectionDivider()
-                VipFeatures(ad.features, FEATURES_COLUMNS_COUNT)
-            }
-
-            if (ad.documents.isNotEmpty()) {
-                SectionDivider()
-                VipDocuments(ad.documents) {
-                    requireContext().openBrowser(it)
-                }
-            }
-
-            if (ad.description.isNotBlank()) {
-                SectionDivider()
-                VipDescription(ad.description)
-            }
-
+            VipDescription(ad.description)
             Spacer(
                 modifier = Modifier
                     .height(PADDING_BOTTOM_EXTRA.dp)
@@ -125,13 +107,31 @@ class VipFragment : Fragment() {
     private fun getNavVipBigPictureUrl() = SuccessScreen.VIP_BIG_PICTURE.value + "/{" + COMPOSE_NAV_ARG_PICTURE_URL + "}"
 
     private fun openGoogleMaps(address: Address) {
-        val encodedAddress = Uri.encode("${address.street}, ${address.city}, ${address.zipCode}")
+        val stringAddress = listOf(
+            address.street,
+            address.city,
+            address.zipCode
+        ).filter { it.isNotBlank() }
+            .joinToString(separator = ", ")
+        val encodedAddress = Uri.encode(stringAddress)
+
         val geoUri = Uri.parse("geo:${address.latitude},${address.longitude}?q=$encodedAddress")
         val mapIntent = Intent(Intent.ACTION_VIEW, geoUri)
         mapIntent.setPackage("com.google.android.apps.maps")
         if (mapIntent.resolveActivity(requireActivity().packageManager) != null) {
             startActivity(mapIntent)
         }
+    }
+
+    private fun shareBigImage(url: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, url)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     private enum class SuccessScreen(val value: String) {
