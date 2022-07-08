@@ -8,6 +8,7 @@ import com.ebayk.util.CurrencyUtils
 import com.ebayk.util.DateUtils
 
 data class VipAd(
+    // id is usually Long, but I've had string in your response
     val id: String,
     val title: String = "",
     val priceWithAmount: String? = null,

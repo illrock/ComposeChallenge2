@@ -142,7 +142,7 @@ class VipFragment : Fragment() {
     companion object {
         const val COMPOSE_NAV_ARG_PICTURE_URL = "pictureUrl"
 
-        private const val AD_ID = 1118635128L
+        private const val AD_ID = "1118635128"
 
         private const val PICTURES_SLIDER_HEIGHT = 300
         private const val FEATURES_COLUMNS_COUNT = 2

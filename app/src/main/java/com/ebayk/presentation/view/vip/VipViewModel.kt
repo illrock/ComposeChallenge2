@@ -27,10 +27,10 @@ class VipViewModel @Inject constructor(
     private val _result = MutableLiveData<ViewModelResult<VipAd>>(ViewModelResult.Loading)
     val result: LiveData<ViewModelResult<VipAd>> = _result
 
-    internal fun loadAd(id: Long) {
+    internal fun loadAd(id: String) {
         _result.value = ViewModelResult.Loading
         viewModelScope.launch(dispatcher) {
-            adRepository.get(id).let { result ->
+            adRepository.getAd(id).let { result ->
                 withContext(Dispatchers.Main) {
                     handleAdResult(result)
                 }

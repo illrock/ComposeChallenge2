@@ -7,6 +7,6 @@ import retrofit2.http.Path
 interface ApiService {
     @GET("ads/{ad_id}")
     suspend fun getAd(
-        @Path("ad_id") adId: Long
+        @Path("ad_id") adId: String
     ) : AdResponse
 }

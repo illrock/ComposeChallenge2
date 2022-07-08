@@ -8,17 +8,11 @@ import java.util.*
 object CurrencyUtils {
     private const val CURRENCY_SYMBOL_UNKNOWN = '?'
 
-    fun formatCurrency(currency: String, amount: Long): String? {
-        val formattedAmount = try {
-            val bigDecimal = BigDecimal(amount)
-                .divide(BigDecimal(100))
-                .setScale(2, RoundingMode.HALF_UP)
-            NumberFormat.getNumberInstance().format(bigDecimal)
-        } catch (e: Exception) {
-            // We should send analytics about that to keep track of these wild cases.
-            e.print()
-            null
-        }
+    fun formatCurrency(currency: String, amount: Long): String {
+        val bigDecimal = BigDecimal(amount)
+            .divide(BigDecimal(100))
+            .setScale(2, RoundingMode.HALF_UP)
+        val formattedAmount = NumberFormat.getNumberInstance().format(bigDecimal)
 
         val currencySymbol = try {
             Currency.getInstance(currency).symbol
@@ -32,6 +26,6 @@ object CurrencyUtils {
             CURRENCY_SYMBOL_UNKNOWN
         }
 
-        return formattedAmount?.let { "$it $currencySymbol" }
+        return "$formattedAmount $currencySymbol"
     }
 }

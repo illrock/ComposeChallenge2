@@ -12,11 +12,11 @@ class AdRepository @Inject constructor(
     private val apiService: ApiService,
     private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend fun get(id: Long): ApiResult<AdResponse> = withContext(dispatcher) {
+    suspend fun getAd(id: String): ApiResult<AdResponse> = withContext(dispatcher) {
         getFromNetwork(id)
     }
 
-    private suspend fun getFromNetwork(id: Long): ApiResult<AdResponse> = try {
+    private suspend fun getFromNetwork(id: String): ApiResult<AdResponse> = try {
         val response = apiService.getAd(id)
         ApiResult.Success(response)
     } catch (e: Exception) {
