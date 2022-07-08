@@ -15,4 +15,7 @@
     <string name="vip_features_section_header">Ausstattung</string>
     <string name="vip_documents_section_header">Weitere Informationen</string>
     <string name="vip_description_section_header">Beschreibung</string>
+
+    <string name="vip_id_clipboard_label">VIP ad id</string>
+    <string name="clipboard_copied_message">Copied to clipboard</string>
 </resources>

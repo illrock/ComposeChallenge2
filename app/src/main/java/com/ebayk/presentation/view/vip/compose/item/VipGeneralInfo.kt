@@ -1,6 +1,11 @@
 package com.ebayk.presentation.view.vip.compose.item
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -8,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -109,12 +115,22 @@ private fun DateViewsId(ad: VipAd, modifier: Modifier = Modifier) {
             )
         }
 
+        val context = LocalContext.current
+        val copiedMessage = stringResource(id = R.string.vip_id_clipboard_label)
+        val toastMessage = stringResource(id = R.string.clipboard_copied_message)
         BodyText(
             text = stringResource(id = R.string.vip_ad_id_template, ad.id),
             colorRes = R.color.text_secondary,
             textAlign = TextAlign.End,
             modifier = Modifier
                 .weight(1f)
+                .clickable {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText(copiedMessage, ad.id)
+                    clipboard.setPrimaryClip(clip)
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT)
+                        .show()
+                }
         )
     }
 }

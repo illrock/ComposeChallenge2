@@ -50,8 +50,8 @@ private fun DocumentItem(document: Document, onClick: (link: String) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(vertical = PADDING_MEDIUM.dp)
             .clickable { onClick(document.link) }
+            .padding(vertical = PADDING_MEDIUM.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_document),
