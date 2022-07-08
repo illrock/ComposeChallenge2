@@ -28,10 +28,10 @@ internal fun ComposeError(error: ViewModelResult.Error, onClick: (() -> Unit)? =
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(PADDING_STANDARD.dp)
             .clickable(enabled = onClick != null) {
                 onClick?.invoke()
             }
+            .padding(PADDING_STANDARD.dp)
     ) {
         Image(
             painter = painterResource(id = error.iconRes),

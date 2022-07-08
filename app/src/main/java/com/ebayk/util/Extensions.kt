@@ -7,6 +7,7 @@ import android.util.Log
 import com.ebayk.BuildConfig
 import com.ebayk.R
 import com.ebayk.presentation.view.util.ViewModelResult
+import retrofit2.HttpException
 import java.net.UnknownHostException
 
 fun Context.openBrowser(url: String) {
@@ -36,6 +37,10 @@ fun Throwable.toViewModelError() = when {
     this is UnknownHostException -> ViewModelResult.Error(
         errorRes = R.string.error_connection,
         iconRes = R.drawable.ic_wifi_off
+    )
+    this is HttpException -> ViewModelResult.Error(
+        errorRes = R.string.error_http,
+        iconRes = R.drawable.ic_tools
     )
     this.message != null -> ViewModelResult.Error(
         errorMessage = message,
